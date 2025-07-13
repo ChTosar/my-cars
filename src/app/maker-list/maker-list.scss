@@ -1,0 +1,18 @@
+:host {
+  height: 100vh;
+  overflow: scroll;
+  min-width: 20vw
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+    list-style: none;
+    li {
+      padding: 0.5rem;
+      &:hover {
+        background-color: #ff9301;
+        cursor: pointer;
+      }
+    }
+}

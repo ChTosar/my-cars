@@ -1,0 +1,5 @@
+<ul>
+  @for (brand of brands(); track brand.make) {
+    <li (click)="setBrand(brand.make)">{{ brand.make }}</li>
+  }
+</ul>
