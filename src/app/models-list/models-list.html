@@ -1,9 +1,22 @@
 <ul>
-  @for (model of models(); track model.model) {
-    <li>
-        <img [src]="model.img.src | async" (load)="imgLoaded(model)" alt="{{ model.model }}" [class.hidden]="!model.img.loaded"/>
-        <img src="img/loadingModel.webp" alt="Cargando..." class="loading" [class.hidden]="model.img.loaded"/>
-      <span>{{ model.model }} {{ model.year }}</span>
-    </li>
+  @for (group of models(); track group.year) {
+    <div class="year">{{ group.year }}</div>
+    @for (model of group.models; track model.model) {
+      <li>
+        <img
+          [src]="model.img.src | async"
+          (load)="imgLoaded(model)"
+          alt="{{ model.model }}"
+          [class.hidden]="!model.img.loaded"
+        />
+        <img
+          src="img/loadingModel.webp"
+          alt="Cargando..."
+          class="loading"
+          [class.hidden]="model.img.loaded"
+        />
+        <span>{{ model.model }} {{ model.year }}</span>
+      </li>
+    }
   }
 </ul>

@@ -1,11 +1,11 @@
 import { Component, Input, WritableSignal, signal } from '@angular/core';
 import { CarStateService } from '../state/car.state.service';
 import { Brand } from '../models/cars.model';
-
+import { AsyncPipe } from '@angular/common';
 @Component({
   selector: 'app-maker-list',
   standalone: true,
-  imports: [],
+  imports: [AsyncPipe],
   templateUrl: './maker-list.html',
   styleUrl: './maker-list.scss'
 })
@@ -13,7 +13,7 @@ export class MakerList {
 
   brands = signal<Brand[]>([]);
 
-  constructor(private carState: CarStateService) {}
+  constructor(public carState: CarStateService) {}
 
   ngOnInit(): void {
     this.loadBrnads();
@@ -28,7 +28,6 @@ export class MakerList {
   }
 
   setBrand(brand: string): void {
-    console.log('Selected brand:', brand);
     this.carState.setSelectedBrand(brand);
   }
 

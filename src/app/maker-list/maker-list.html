@@ -1,5 +1,10 @@
 <ul>
   @for (brand of brands(); track brand.make) {
-    <li (click)="setBrand(brand.make)">{{ brand.make }}</li>
+    <li
+      (click)="setBrand(brand.make)"
+      [class.selected]="(carState.getSelectedBrand() | async) === brand.make"
+    >
+      {{ brand.make }}
+    </li>
   }
 </ul>

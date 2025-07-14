@@ -14,7 +14,7 @@ export interface Model {
   basemodel: string;
   year: string;
   img: {
-    src: string;
+    src: Promise<string>;
     loaded: boolean;
   };
 }

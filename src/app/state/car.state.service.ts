@@ -57,6 +57,15 @@ export class CarStateService {
   }
 
   loadModels(brand: string): void {
+
+    const brands = this.brands$.getValue();
+    const existingBrand = brands.find(b => b.make === brand) as Brand;
+
+    if (existingBrand.models.length > 0) {
+      this.models$.next(existingBrand.models);
+      return;
+    }
+
     this.allVehicles.getModels(brand).subscribe(response => {
 
       const models = response.results.map((model: any) => ({
@@ -68,6 +77,11 @@ export class CarStateService {
           loaded: false
         }
       }));
+
+      existingBrand.models = models;
+      this.brands$.next(brands);
+
+      console.log('Brand updated? brand:', this.brands$.getValue().find(b => b.make === brand));
 
       this.models$.next(models);
     });

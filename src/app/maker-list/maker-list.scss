@@ -10,7 +10,7 @@ ul {
     list-style: none;
     li {
       padding: 0.5rem;
-      &:hover {
+      &:hover, &.selected {
         background-color: #ff9301;
         cursor: pointer;
       }
