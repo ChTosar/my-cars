@@ -78,7 +78,6 @@ export class CarStateService {
         year: model.year,
         img: {
           src: this.allVehicles.getImg(brand, model.model, model.year, '200'),
-          loaded: false
         }
       }));
 
@@ -103,7 +102,6 @@ export class CarStateService {
         year: model.year,
         img: {
           src: this.allVehicles.getImg(brand, model.model, model.year, '200'),
-          loaded: false
         }
       }));
 

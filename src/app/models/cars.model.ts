@@ -15,6 +15,5 @@ export interface Model {
   year: string;
   img: {
     src: Promise<string>;
-    loaded: boolean;
   };
 }

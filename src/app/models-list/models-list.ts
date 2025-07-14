@@ -3,9 +3,10 @@ import { AsyncPipe } from '@angular/common';
 import { Model } from '../models/cars.model';
 import { CarStateService } from '../state/car.state.service';
 
+type ModelStatus = Model & { img: { src: Promise<string>, loaded: boolean } }
 interface ModelsByYear {
   year: string,
-  models: Model[];
+  models: ModelStatus[];
 }
 @Component({
   selector: 'app-models-list',
@@ -34,7 +35,7 @@ export class ModelsList {
           yearGroup = { year, models: [] };
           modelsByYear.push(yearGroup);
         }
-        yearGroup.models.push(model);
+        yearGroup.models.push(model as ModelStatus);
       });
       this.models.set(modelsByYear);
 
@@ -61,7 +62,7 @@ export class ModelsList {
     }
   }
 
-  imgLoaded(model: Model): void {
+  imgLoaded(model: ModelStatus): void {
     model.img.loaded = true;
   }
 }
