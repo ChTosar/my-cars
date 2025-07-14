@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, ElementRef, QueryList, signal, ViewChildren } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { Model } from '../models/cars.model';
 import { CarStateService } from '../state/car.state.service';
@@ -19,6 +19,9 @@ export class ModelsList {
   models = signal<ModelsByYear[]>([]);
   brand: string | null = null;
 
+  @ViewChildren('modelsRef') itemRefs!: QueryList<ElementRef>;
+  lasElementObsesrver: IntersectionObserver | null = null;
+
   constructor(private carState: CarStateService) {
     this.carState.getModels().subscribe((models: Model[]) => {
 
@@ -34,7 +37,28 @@ export class ModelsList {
         yearGroup.models.push(model);
       });
       this.models.set(modelsByYear);
+
     });
+  }
+
+  //evento tras repintado de la lista
+  ngAfterViewChecked(): void {
+    this.lasElementObsesrver?.disconnect();
+    this.loadMore();
+  };
+
+
+  loadMore() {
+    const lastItem = this.itemRefs.last;
+
+    if (lastItem) {
+      this.lasElementObsesrver = new IntersectionObserver(([entry]) => {
+        if (entry.isIntersecting) {
+          this.carState.loadMoreModels();
+        }
+      });
+      this.lasElementObsesrver.observe(lastItem.nativeElement);
+    }
   }
 
   imgLoaded(model: Model): void {

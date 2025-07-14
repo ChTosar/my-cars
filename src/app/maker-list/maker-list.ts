@@ -2,18 +2,23 @@ import { Component, Input, WritableSignal, signal } from '@angular/core';
 import { CarStateService } from '../state/car.state.service';
 import { Brand } from '../models/cars.model';
 import { AsyncPipe } from '@angular/common';
+import { Search } from '../search/search';
+
+//type de Brand + errorImg
+type BrandList = Brand & { errorImg?: boolean };
 @Component({
   selector: 'app-maker-list',
   standalone: true,
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, Search],
   templateUrl: './maker-list.html',
   styleUrl: './maker-list.scss'
 })
 export class MakerList {
 
-  brands = signal<Brand[]>([]);
 
-  constructor(public carState: CarStateService) {}
+  brands = signal<BrandList[]>([]);
+
+  constructor(public carState: CarStateService) { }
 
   ngOnInit(): void {
     this.loadBrnads();
@@ -21,7 +26,7 @@ export class MakerList {
 
   loadBrnads(): void {
 
-    this.carState.getBrands().subscribe((brands: Brand[]) => {
+    this.carState.brandsObservable().subscribe((brands: Brand[]) => {
       this.brands.set(brands);
     });
 
@@ -29,6 +34,17 @@ export class MakerList {
 
   setBrand(brand: string): void {
     this.carState.setSelectedBrand(brand);
+  }
+
+  onSearch(searchTerm: any): void {
+    const filteredBrands = this.carState.getBrands().filter(brand => brand.make.toLowerCase().includes(searchTerm.toLowerCase()));
+
+    if (filteredBrands.length === 0) {
+      this.brands.set(this.carState.getBrands());
+    } else {
+      this.brands.set(filteredBrands);
+    }
+
   }
 
 }

@@ -1,18 +1,77 @@
 :host {
   height: 100vh;
-  overflow: scroll;
-  min-width: 20vw
+  min-width: 20vw;
+  display: flex;
+  flex-direction: column;
+  border-inline-start: 2px solid #00000033;
+  border-inline-end: 2px solid #00000033;
 }
 
 ul {
   margin: 0;
   padding: 0;
-    list-style: none;
-    li {
-      padding: 0.5rem;
-      &:hover, &.selected {
-        background-color: #ff9301;
-        cursor: pointer;
+  overflow: auto;
+  list-style: none;
+
+  li {
+    padding: 0.5rem 2rem;
+    border-bottom: 2px solid #00000033;
+    .brandLogo {
+      position: fixed;
+      z-index: 10;
+      left: calc(20vw + 5px);
+      top: 0;
+      width: 80vw;
+      height: 100vh;
+      display: none;
+      h1 {
+        font-family: "Times New Roman", Times, serif;
+        letter-spacing: 0.4rem;
+        display: none;
+        color: #cecece;
+      }
+      img {
+        display: none;
+        width: 256px;
+        height: 256px;
+      }
+      &:hover {
+        display: none !important;
       }
     }
+    &:hover .brandLogo {
+      display: flex;
+      align-content: center;
+      justify-content: center;
+      align-items: center;
+      background: #1f1f1f;
+      img,
+      h1 {
+        display: block;
+        animation: fadeIn 2.5s ease-out;
+      }
+    }
+    &.selected .brandLogo {
+      display: none;
+    }
+    &:first-child {
+      border-top: 2px solid #00000033;
+      margin-top: 5rem;
+    }
+    &:hover,
+    &.selected {
+      background-color: #ff9301;
+      cursor: pointer;
+      color: #1f1f1f;
+    }
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }

@@ -13,12 +13,16 @@ export class CarStateService {
 
   constructor(private allVehicles: AllVehicles) { }
 
-  getBrands(): Observable<Brand[]> {
+  brandsObservable(): Observable<Brand[]> {
     if (this.brands$.getValue().length === 0) {
       this.loadBrands();
     }
 
     return this.brands$.asObservable();
+  }
+
+  getBrands(): Brand[] {
+    return this.brands$.value;
   }
 
   getModels(): Observable<Model[]> {
@@ -80,10 +84,30 @@ export class CarStateService {
 
       existingBrand.models = models;
       this.brands$.next(brands);
-
-      console.log('Brand updated? brand:', this.brands$.getValue().find(b => b.make === brand));
-
       this.models$.next(models);
+    });
+  }
+
+  loadMoreModels(): void {
+    const currentModels = this.models$.getValue();
+    const brand = this.selectedBrandId$.getValue();
+
+    if (!brand || currentModels.length === 0) {
+      return;
+    }
+
+    this.allVehicles.getModels(brand, currentModels.length).subscribe(response => {
+      const newModels = response.results.map((model: any) => ({
+        model: model.model,
+        basemodel: model.basemodel,
+        year: model.year,
+        img: {
+          src: this.allVehicles.getImg(brand, model.model, model.year, '200'),
+          loaded: false
+        }
+      }));
+
+      this.models$.next([...currentModels, ...newModels]);
     });
   }
 }

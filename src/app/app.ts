@@ -1,4 +1,4 @@
-import { Component, effect, WritableSignal, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { MakerList } from './maker-list/maker-list';
 import { ModelsList } from './models-list/models-list';

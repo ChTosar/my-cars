@@ -1,3 +1,7 @@
+<app-search
+  placeholder="Search brand"
+  (searchEvent)="onSearch($event)"
+></app-search>
 <ul>
   @for (brand of brands(); track brand.make) {
     <li
@@ -5,6 +9,17 @@
       [class.selected]="(carState.getSelectedBrand() | async) === brand.make"
     >
       {{ brand.make }}
+      <div class="brandLogo">
+        @if (brand.errorImg) {
+          <h1 class="brandName">{{ brand.make }}</h1>
+        } @else {
+          <img
+            src="img/brands/{{ brand.make.toLowerCase().split(' ')[0] }}.webp"
+            alt="{{brand.make}}"
+            (error)="brand.errorImg = true"
+          />
+        }
+      </div>
     </li>
   }
 </ul>

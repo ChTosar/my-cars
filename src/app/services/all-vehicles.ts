@@ -41,7 +41,7 @@ export class AllVehicles {
       url.searchParams.append('offset', offset.toString());
     }
 
-    return this.http.get<any>(url.toString());
+    return this.http.get(url.toString());
   }
 
 

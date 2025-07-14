@@ -1,34 +1,50 @@
 :host {
   height: 100vh;
-  overflow: scroll;
-  padding: 1rem;
-}
-
-.year {
-  width: 100%;
-  font-family: 'Times New Roman', Times, serif;
-  font-size: 3rem;
-  margin: 2rem 0;
+  width: 80vw;
+  overflow: auto;
 }
 
 ul {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  gap: 2rem;
   padding: 0;
+
+  .year {
+    width: 100%;
+    font-family: "Times New Roman", Times, serif;
+    letter-spacing: 0.4rem;
+    border-bottom: 2px solid #191919;
+    font-size: 3rem;
+    margin: 2rem 0;
+  }
+
+  .yearModels {
+    display: flex;
+    gap: 2rem;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
 
   li {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 0.5rem;
+    position: relative;
 
     span {
       max-width: 180px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      display: none;
+    }
+
+    &:hover span {
+      display: block;
+      position: absolute;
+      bottom: -1.5rem;
     }
 
     img {
