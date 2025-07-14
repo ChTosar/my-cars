@@ -65,7 +65,7 @@ export class AllVehicles {
       if (data!.paintData!.paintCombinations) {
 
         const paintCombinations = data!.paintData!.paintCombinations;
-        color = this.filterAvailableColors(paintCombinations);
+        color = this.randomColor(paintCombinations);
       }
 
     });
@@ -73,19 +73,22 @@ export class AllVehicles {
     return color;
   }
 
-  private filterAvailableColors(paintCombinations: any[]): string {
+  private randomColor(paintCombinations: any[]): string {
 
-    let result: string = '';
+    let results: string[] = [];
 
+    // Get real avaliable colors
     for (const key in paintCombinations) {
-
       for (const mappedKey in paintCombinations[key].mapped) {
         if (paintCombinations[key].mapped[mappedKey].paintDescription != '') {
-          result = paintCombinations[key].mapped[mappedKey].paintDescription;
+          results.push(paintCombinations[key].mapped[mappedKey].paintDescription);
           break;
         }
       }
     }
+
+    const random = Math.floor(Math.random() * results.length);
+    const result = results[random];
 
     return result;
   }
