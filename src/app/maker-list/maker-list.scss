@@ -1,6 +1,6 @@
 :host {
   height: 100vh;
-  min-width: 20vw;
+  width: 20vw;
   display: flex;
   flex-direction: column;
   border-inline-start: 2px solid #00000033;
@@ -16,6 +16,8 @@ ul {
   li {
     padding: 0.5rem 2rem;
     border-bottom: 2px solid #00000033;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     .brandLogo {
       position: fixed;
       z-index: 10;

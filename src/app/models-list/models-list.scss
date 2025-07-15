@@ -55,6 +55,7 @@ ul {
       -moz-user-drag: none;
       -o-user-drag: none;
       width: 224px;
+      cursor: pointer;
       &.hidden {
         display: none;
       }

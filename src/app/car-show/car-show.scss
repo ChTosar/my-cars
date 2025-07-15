@@ -27,6 +27,8 @@ button.close {
 h1 {
   animation: fadeIn 1s linear;
   user-select: none;
+  font-family: "Times New Roman", Times, serif;
+  letter-spacing: 0.4rem;
 }
 
 .car {
@@ -36,19 +38,24 @@ h1 {
   img {
     display: none;
     width: 100%;
+    user-select: none;
+    user-drag: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
   }
 }
-
 
 @keyframes fadeIn {
   0% {
     opacity: 0.1;
+    letter-spacing: 0.2rem;
   }
   100% {
     opacity: 1;
+    letter-spacing: 0.4rem;
   }
 }
-
 
 @keyframes zoomIn {
   0% {

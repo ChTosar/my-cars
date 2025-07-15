@@ -32,6 +32,7 @@ export class MakerList {
 
   setBrand(brand: string): void {
     this.carState.setSelectedBrand(brand);
+    document.querySelector('app-models-list')?.scrollTo({top:0});
   }
 
   onSearch(searchTerm: any): void {
