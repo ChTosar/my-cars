@@ -1,7 +1,8 @@
-import { Component, effect, ElementRef, EventEmitter, Input, Output, QueryList, signal, ViewChildren } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, QueryList, signal, ViewChildren } from '@angular/core';
 import { ModelStatus } from '../models/cars.model';
 import { Api } from '../services/api.service';
 import { CarStateService } from '../state/car.state.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-car-show',
@@ -15,6 +16,7 @@ export class CarShow {
   @Input() car: ModelStatus = {} as ModelStatus;
   @Output() close = new EventEmitter<boolean>();
   @ViewChildren('views') viewsRefs!: QueryList<ElementRef>;
+  private brandsSub?: Subscription;
 
   private interval: number | undefined;
 
@@ -25,7 +27,7 @@ export class CarShow {
 
   ngOnInit(): void {
 
-    this.carState.getSelectedBrand().subscribe((brand) => {
+    this.brandsSub = this.carState.getSelectedBrand().subscribe((brand) => {
       this.brand = brand as string;
     });
 
@@ -66,6 +68,7 @@ export class CarShow {
   closeMe() {
     this.close.emit(true);
     clearInterval(this.interval);
+    this.brandsSub?.unsubscribe();
   }
 
 }

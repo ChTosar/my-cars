@@ -1,8 +1,9 @@
-import { Component, ComponentRef, createComponent, ElementRef, EnvironmentInjector, inject, QueryList, signal, ViewChildren } from '@angular/core';
+import { Component, ElementRef, QueryList, signal, ViewChildren } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { Model, ModelStatus } from '../models/cars.model';
 import { CarStateService } from '../state/car.state.service';
 import { CarShow } from '../car-show/car-show';
+import { Subscription } from 'rxjs';
 
 interface ModelsByYear {
   year: string,
@@ -20,12 +21,13 @@ export class ModelsList {
   models = signal<ModelsByYear[]>([]);
   carShow = signal(false);
   modelSelect = signal<ModelStatus>({} as ModelStatus);
+  private modelsSub?: Subscription;
 
   @ViewChildren('modelsRef') itemRefs!: QueryList<ElementRef>;
   lasElementObsesrver: IntersectionObserver | null = null;
 
   constructor(private carState: CarStateService) {
-    this.carState.getModels().subscribe((models: Model[]) => {
+    this.modelsSub = this.carState.getModels().subscribe((models: Model[]) => {
 
       //order models by year
       const modelsByYear: ModelsByYear[] = [];
@@ -74,6 +76,7 @@ export class ModelsList {
 
   close() {
     this.carShow.set(false);
+    this.modelsSub?.unsubscribe();
   }
 
 }

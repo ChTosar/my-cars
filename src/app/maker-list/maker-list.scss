@@ -30,7 +30,7 @@ ul {
         font-family: "Times New Roman", Times, serif;
         letter-spacing: 0.4rem;
         display: none;
-        color: #cecece;
+        color: var(--text-color);
       }
       img {
         display: none;
@@ -47,7 +47,7 @@ ul {
       align-content: center;
       justify-content: center;
       align-items: center;
-      background: #1f1f1f;
+      background: var(--background-color);
       img,
       h1 {
         display: block;
@@ -65,7 +65,7 @@ ul {
     &.selected {
       background-color: #ff9301;
       cursor: pointer;
-      color: #1f1f1f;
+      color: var(--background-color);
     }
   }
 }

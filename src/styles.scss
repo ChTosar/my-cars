@@ -1,7 +1,11 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --background-color: #1f1f1f;
+  --text-color: #cecece;
+}
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  background: #1f1f1f;
-  color: #cecece;
+  background: var(--background-color);
+  color: var(--text-color);
 }
