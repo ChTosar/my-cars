@@ -23,4 +23,8 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist/my-cars
-          allow_empty_commit: true
+          publish_branch: gh-pages
+          destination_dir: .
+          force_orphan: true
+          keep_files: false
+          commit_message: "Deploy to GitHub Pages"
