@@ -17,3 +17,13 @@ export interface Model {
     src: Promise<string>;
   };
 }
+
+export type ModelStatus = Model & {
+  id: number,
+  colors: Promise<[]>,
+  color: Promise<string>,
+  img: {
+    src: Promise<string>,
+    loaded: boolean
+  }
+}

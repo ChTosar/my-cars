@@ -1,10 +1,9 @@
-import { Component, Input, WritableSignal, signal } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { CarStateService } from '../state/car.state.service';
 import { Brand } from '../models/cars.model';
 import { AsyncPipe } from '@angular/common';
 import { Search } from '../search/search';
 
-//type de Brand + errorImg
 type BrandList = Brand & { errorImg?: boolean };
 @Component({
   selector: 'app-maker-list',
@@ -14,7 +13,6 @@ type BrandList = Brand & { errorImg?: boolean };
   styleUrl: './maker-list.scss'
 })
 export class MakerList {
-
 
   brands = signal<BrandList[]>([]);
 

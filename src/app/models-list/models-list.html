@@ -2,8 +2,8 @@
   @for (group of models(); track group.year) {
     <div class="year" #modelsRef>{{ group.year }}</div>
     <div class="yearModels">
-      @for (model of group.models; track model.model) {
-        <li>
+      @for (model of group.models; track model.id) {
+        <li (click)="show(model)">
           <img
             [src]="model.img.src | async"
             (load)="imgLoaded(model)"
@@ -22,3 +22,6 @@
     </div>
   }
 </ul>
+@if (carShow()) {
+  <app-car-show [car]="modelSelect()" (close)="close()"></app-car-show>
+}

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Brand, Model } from '../models/cars.model';
-import { AllVehicles } from '../services/all-vehicles';
+import { Api } from '../services/api.service';
 
 @Injectable({
   providedIn: 'root'
@@ -11,7 +11,7 @@ export class CarStateService {
   private models$ = new BehaviorSubject<Model[]>([]);
   private selectedBrandId$ = new BehaviorSubject<string | null>(null);
 
-  constructor(private allVehicles: AllVehicles) { }
+  constructor(private api: Api) { }
 
   brandsObservable(): Observable<Brand[]> {
     if (this.brands$.getValue().length === 0) {
@@ -38,8 +38,8 @@ export class CarStateService {
     return this.selectedBrandId$.asObservable();
   }
 
-  loadBrands(offset: Number = 0 ): void {
-    this.allVehicles.getBrands(offset).subscribe(response => {
+  loadBrands(offset: Number = 0): void {
+    this.api.getBrands(offset).subscribe(response => {
 
       const brands: Brand[] = this.constMapBrands(response.results);
 
@@ -60,52 +60,51 @@ export class CarStateService {
     }));
   }
 
-  loadModels(brand: string): void {
 
+  loadModels(brand: string, offset: number = 0): void {
     const brands = this.brands$.getValue();
     const existingBrand = brands.find(b => b.make === brand) as Brand;
+    const currentModels = existingBrand.models || [];
 
-    if (existingBrand.models.length > 0) {
-      this.models$.next(existingBrand.models);
+    if (offset === 0 && currentModels.length > 0) {
+      this.models$.next(currentModels);
       return;
     }
 
-    this.allVehicles.getModels(brand).subscribe(response => {
+    this.api.getModels(brand, offset).subscribe(response => {
+      const newModels = response.results.map((model: any, index: number) => {
+        const id = index + offset;
 
-      const models = response.results.map((model: any) => ({
-        model: model.model,
-        basemodel: model.basemodel,
-        year: model.year,
-        img: {
-          src: this.allVehicles.getImg(brand, model.model, model.year, '200'),
-        }
-      }));
+        const colors: Promise<any> = this.api.getCarColors(brand, model.model, model.year);
+        const color: Promise<any> = this.api.randomColor(colors);
 
-      existingBrand.models = models;
+        return {
+          id,
+          model: model.model,
+          basemodel: model.basemodel,
+          year: model.year,
+          colors,
+          color,
+          img: {
+            src: this.api.getImg(brand, model.model, model.year, '200', color),
+          }
+        };
+      });
+
+      existingBrand.models = [...currentModels, ...newModels];
+      this.models$.next(existingBrand.models);
       this.brands$.next(brands);
-      this.models$.next(models);
     });
   }
 
   loadMoreModels(): void {
-    const currentModels = this.models$.getValue();
     const brand = this.selectedBrandId$.getValue();
+    const currentModels = this.models$.getValue();
 
     if (!brand || currentModels.length === 0) {
       return;
     }
 
-    this.allVehicles.getModels(brand, currentModels.length).subscribe(response => {
-      const newModels = response.results.map((model: any) => ({
-        model: model.model,
-        basemodel: model.basemodel,
-        year: model.year,
-        img: {
-          src: this.allVehicles.getImg(brand, model.model, model.year, '200'),
-        }
-      }));
-
-      this.models$.next([...currentModels, ...newModels]);
-    });
+    this.loadModels(brand, currentModels.length);
   }
 }

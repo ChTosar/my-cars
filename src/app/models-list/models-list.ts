@@ -1,9 +1,9 @@
-import { Component, ElementRef, QueryList, signal, ViewChildren } from '@angular/core';
+import { Component, ComponentRef, createComponent, ElementRef, EnvironmentInjector, inject, QueryList, signal, ViewChildren } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { Model } from '../models/cars.model';
+import { Model, ModelStatus } from '../models/cars.model';
 import { CarStateService } from '../state/car.state.service';
+import { CarShow } from '../car-show/car-show';
 
-type ModelStatus = Model & { img: { src: Promise<string>, loaded: boolean } }
 interface ModelsByYear {
   year: string,
   models: ModelStatus[];
@@ -11,14 +11,15 @@ interface ModelsByYear {
 @Component({
   selector: 'app-models-list',
   standalone: true,
-  imports: [AsyncPipe],
+  imports: [AsyncPipe, CarShow],
   templateUrl: './models-list.html',
   styleUrl: './models-list.scss'
 })
 export class ModelsList {
 
   models = signal<ModelsByYear[]>([]);
-  brand: string | null = null;
+  carShow = signal(false);
+  modelSelect = signal<ModelStatus>({} as ModelStatus);
 
   @ViewChildren('modelsRef') itemRefs!: QueryList<ElementRef>;
   lasElementObsesrver: IntersectionObserver | null = null;
@@ -65,4 +66,14 @@ export class ModelsList {
   imgLoaded(model: ModelStatus): void {
     model.img.loaded = true;
   }
+
+  show(model: ModelStatus): void {
+    this.modelSelect.set(model);
+    this.carShow.set(true);
+  }
+
+  close() {
+    this.carShow.set(false);
+  }
+
 }
