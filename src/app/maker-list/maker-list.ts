@@ -4,6 +4,7 @@ import { Brand } from '../models/cars.model';
 import { AsyncPipe } from '@angular/common';
 import { Search } from '../search/search';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 type BrandList = Brand & { errorImg?: boolean };
 @Component({
@@ -18,7 +19,7 @@ export class MakerList {
   brands = signal<BrandList[]>([]);
   private brandsSub?: Subscription;
 
-  constructor(public carState: CarStateService) { }
+  constructor(public carState: CarStateService, private router: Router) { }
 
   ngOnInit(): void {
     this.loadBrnads();
@@ -34,7 +35,14 @@ export class MakerList {
 
   setBrand(brand: string): void {
     this.carState.setSelectedBrand(brand);
-    document.querySelector('app-models-list')?.scrollTo({ top: 0 });
+    const container = document.querySelector('.container');
+    container?.scrollTo({
+      left: container.scrollWidth,
+      behavior: 'smooth'
+    });
+
+    this.router.navigate(['', brand]);
+
   }
 
   onSearch(searchTerm: any): void {

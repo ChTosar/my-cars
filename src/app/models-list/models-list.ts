@@ -4,6 +4,7 @@ import { Model, ModelStatus } from '../models/cars.model';
 import { CarStateService } from '../state/car.state.service';
 import { CarShow } from '../car-show/car-show';
 import { Subscription } from 'rxjs';
+import { Router } from '@angular/router';
 
 interface ModelsByYear {
   year: string,
@@ -26,7 +27,7 @@ export class ModelsList {
   @ViewChildren('modelsRef') itemRefs!: QueryList<ElementRef>;
   lasElementObsesrver: IntersectionObserver | null = null;
 
-  constructor(private carState: CarStateService) {
+  constructor(private carState: CarStateService, private router: Router, private elRef: ElementRef) {
     this.modelsSub = this.carState.getModels().subscribe((models: Model[]) => {
 
       //order models by year
@@ -40,6 +41,7 @@ export class ModelsList {
         }
         yearGroup.models.push(model as ModelStatus);
       });
+      this.elRef.nativeElement?.scrollTo({ top: 0 });
       this.models.set(modelsByYear);
 
     });
@@ -72,6 +74,15 @@ export class ModelsList {
   show(model: ModelStatus): void {
     this.modelSelect.set(model);
     this.carShow.set(true);
+  }
+
+  back() {
+    document.querySelector('.container')?.scrollTo({
+      left: 0,
+      behavior: 'smooth'
+    });
+
+    this.router.navigate(['']);
   }
 
   close() {

@@ -7,6 +7,12 @@
   border-inline-end: 2px solid #00000033;
 }
 
+@media (orientation: portrait) {
+  :host {
+    width: 100vw;
+  }
+}
+
 ul {
   margin: 0;
   padding: 0;
@@ -43,7 +49,9 @@ ul {
       }
     }
     &:hover .brandLogo {
-      display: flex;
+      @media (orientation: landscape) {
+        display: flex;
+      }
       align-content: center;
       justify-content: center;
       align-items: center;
@@ -60,6 +68,9 @@ ul {
     &:first-child {
       border-top: 2px solid #00000033;
       margin-top: 5rem;
+      @media (orientation: portrait) {
+        margin-top: 0;
+      }
     }
     &:hover,
     &.selected {
