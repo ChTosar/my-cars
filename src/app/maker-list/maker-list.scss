@@ -5,6 +5,7 @@
   flex-direction: column;
   border-inline-start: 2px solid #00000033;
   border-inline-end: 2px solid #00000033;
+  position: relative;
 }
 
 @media (orientation: portrait) {
@@ -68,9 +69,6 @@ ul {
     &:first-child {
       border-top: 2px solid #00000033;
       margin-top: 5rem;
-      @media (orientation: portrait) {
-        margin-top: 0;
-      }
     }
     &:hover,
     &.selected {

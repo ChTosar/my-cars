@@ -2,11 +2,9 @@
   display: flex;
   flex-direction: row;
   gap: 20px;
-}
-
-@media (orientation: portrait) {
-  :host {
+  @media (orientation: portrait) {
     overflow: hidden;
     width: 200vw;
+    gap: 0;
   }
 }

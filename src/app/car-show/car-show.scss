@@ -34,7 +34,9 @@ h1 {
 .car {
   max-width: 720px;
   margin-bottom: 15%;
-  animation: zoomIn 5s ease-out;
+  &.animate {
+    animation: zoomIn 5s ease-out;
+  }
   img {
     display: none;
     width: 100%;
@@ -62,15 +64,45 @@ h1 {
     transform: scale(0.2);
     opacity: 0;
   }
-  20% {
-    transform: scale(0.2);
-    opacity: 0;
-  }
-  85% {
-    opacity: 0.3;
-  }
   100% {
     transform: scale(1);
     opacity: 1;
+  }
+}
+
+.loading {
+  transform-origin: 50% 100%;
+  transform: perspective(40px) rotateX(25deg);
+  .loader {
+    width: 140px;
+    aspect-ratio: 1;
+    display: grid;
+    border-radius: 50%;
+    background:
+      linear-gradient(0deg, rgb(255 255 255/50%) 30%, #000 0 70%, rgb(255 255 255/100%) 0)
+        50%/8% 100%,
+      linear-gradient(90deg, rgb(255 255 255/25%) 30%, #000 0 70%, rgb(255 255 255/75%) 0)
+        50%/100% 8%;
+    background-repeat: no-repeat;
+    animation: l23 1s infinite steps(12);
+
+    &::before,
+    &::after {
+      content: "";
+      grid-area: 1/1;
+      border-radius: 50%;
+      background: inherit;
+      opacity: 0.915;
+      transform: rotate(30deg);
+    }
+    &::after {
+      opacity: 0.83;
+      transform: rotate(60deg);
+    }
+  }
+  @keyframes l23 {
+    100% {
+      transform: rotate(1turn);
+    }
   }
 }

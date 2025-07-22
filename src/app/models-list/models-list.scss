@@ -11,6 +11,8 @@
 .topBar {
   display: none;
   width: 100%;
+  box-shadow: 1px 0px 10px 0px var(--background-color);
+  z-index: 1;
   @media (orientation: portrait) {
     display: block;
     left: 0;
@@ -39,6 +41,10 @@ ul {
     border-bottom: 2px solid #191919;
     font-size: 3rem;
     margin: 2rem 0;
+    @media (orientation: portrait) {
+      font-size: 2.5rem;
+      margin-inline-start: 1rem;
+    }
   }
 
   .yearModels {
@@ -78,6 +84,9 @@ ul {
       -moz-user-drag: none;
       -o-user-drag: none;
       width: 224px;
+      @media (orientation: portrait) {
+        width: 25vw;
+      }
       cursor: pointer;
       &.hidden {
         display: none;

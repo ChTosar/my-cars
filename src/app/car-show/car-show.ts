@@ -22,6 +22,7 @@ export class CarShow {
 
   imgs = signal<string[]>([]);
   brand: string = '';
+  loaded: number = 0;
 
   constructor(private api: Api, private carState: CarStateService) { }
 
@@ -37,32 +38,49 @@ export class CarShow {
       if (this.interval) {
         clearInterval(this.interval);
       }
-
-      let index = 0;
-      let prevView: any = null;
-
-      this.interval = setInterval(() => {
-
-        const view = this.viewsRefs.toArray()[index];
-
-        if (view) {
-          requestAnimationFrame(() => {
-            if (prevView) {
-              prevView.nativeElement.style.display = '';
-            }
-            view.nativeElement.style.display = 'block';
-            prevView = view;
-          })
-        }
-
-        index++;
-        if (index >= this.imgs().length) {
-          index = 0;
-        }
-
-      }, 120);
     });
 
+  }
+
+  imgLoaded() {
+
+    console.log('imgLoaded', this.loaded);
+
+    this.loaded++;
+
+    console.log('this.loaded === this.imgs.length > ', this.loaded, this.imgs().length, this.loaded === this.imgs().length)
+
+    if (this.loaded === this.imgs().length) {
+      this.animate();
+    }
+
+  }
+
+  animate() {
+
+    let index = 0;
+    let prevView: any = null;
+
+    this.interval = setInterval(() => {
+
+      const view = this.viewsRefs.toArray()[index];
+
+      if (view) {
+        requestAnimationFrame(() => {
+          if (prevView) {
+            prevView.nativeElement.style.display = '';
+          }
+          view.nativeElement.style.display = 'block';
+          prevView = view;
+        })
+      }
+
+      index++;
+      if (index >= this.imgs().length) {
+        index = 0;
+      }
+
+    }, 120);
   }
 
   closeMe() {
