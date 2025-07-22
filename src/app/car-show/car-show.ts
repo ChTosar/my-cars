@@ -44,11 +44,7 @@ export class CarShow {
 
   imgLoaded() {
 
-    console.log('imgLoaded', this.loaded);
-
     this.loaded++;
-
-    console.log('this.loaded === this.imgs.length > ', this.loaded, this.imgs().length, this.loaded === this.imgs().length)
 
     if (this.loaded === this.imgs().length) {
       this.animate();

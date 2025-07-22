@@ -25,6 +25,7 @@ ul {
     border-bottom: 2px solid #00000033;
     text-overflow: ellipsis;
     white-space: nowrap;
+    user-select: none;
     .brandLogo {
       position: fixed;
       z-index: 10;
@@ -72,7 +73,8 @@ ul {
     }
     &:hover,
     &.selected {
-      background-color: #ff9301;
+      background-color: var(--selected);
+      border-color: var(--selected);
       cursor: pointer;
       color: var(--background-color);
     }
