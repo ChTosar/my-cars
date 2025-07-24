@@ -1,7 +1,5 @@
-import { Component, ElementRef, EventEmitter, Input, Output, QueryList, signal, ViewChildren } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Input, Output, QueryList, Signal, signal, ViewChildren } from '@angular/core';
 import { ModelStatus } from '../models/cars.model';
-import { Api } from '../services/api.service';
-import { CarStateService } from '../state/car.state.service';
 import { Subscription } from 'rxjs';
 
 @Component({
@@ -13,40 +11,23 @@ import { Subscription } from 'rxjs';
 })
 export class CarShow {
 
-  @Input() car: ModelStatus = {} as ModelStatus;
+  @Input() car: { brand: string, model: ModelStatus, imgs: Signal<string[]>} = {} as any; //?
+
   @Output() close = new EventEmitter<boolean>();
   @ViewChildren('views') viewsRefs!: QueryList<ElementRef>;
   private brandsSub?: Subscription;
 
   private interval: number | undefined;
 
-  imgs = signal<string[]>([]);
-  brand: string = '';
   loaded: number = 0;
 
-  constructor(private api: Api, private carState: CarStateService) { }
-
-  ngOnInit(): void {
-
-    this.brandsSub = this.carState.getSelectedBrand().subscribe((brand) => {
-      this.brand = brand as string;
-    });
-
-    this.car.color.then((color) => {
-      this.imgs.set(this.api.get360Imgs(this.brand as string, this.car.model, this.car.year, color));
-
-      if (this.interval) {
-        clearInterval(this.interval);
-      }
-    });
-
-  }
+  constructor() {}
 
   imgLoaded() {
 
     this.loaded++;
 
-    if (this.loaded === this.imgs().length) {
+    if (this.loaded === this.car.imgs().length) {
       this.animate();
     }
 
@@ -72,7 +53,7 @@ export class CarShow {
       }
 
       index++;
-      if (index >= this.imgs().length) {
+      if (index >= this.car.imgs().length) {
         index = 0;
       }
 

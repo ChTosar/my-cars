@@ -1,64 +1,41 @@
-import { Component, signal } from '@angular/core';
-import { CarStateService } from '../state/car.state.service';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { Brand } from '../models/cars.model';
-import { AsyncPipe } from '@angular/common';
 import { Search } from '../search/search';
-import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
 
 type BrandList = Brand & { errorImg?: boolean };
 @Component({
   selector: 'app-maker-list',
   standalone: true,
-  imports: [AsyncPipe, Search],
+  imports: [Search],
   templateUrl: './maker-list.html',
   styleUrl: './maker-list.scss'
 })
 export class MakerList {
 
+  @Input() makers = signal<Brand[]>([]);
+  @Output() setBrand = new EventEmitter<string>();
   brands = signal<BrandList[]>([]);
-  private brandsSub?: Subscription;
+  selected: string = '';
 
-  constructor(public carState: CarStateService, private router: Router) { }
+  constructor() {}
 
-  ngOnInit(): void {
-    this.loadBrnads();
-  }
-
-  loadBrnads(): void {
-
-    this.brandsSub = this.carState.brandsObservable().subscribe((brands: Brand[]) => {
-      this.brands.set(brands);
-    });
-
-  }
-
-  setBrand(brand: string): void {
-    this.carState.setSelectedBrand(brand);
-    const container = document.querySelector('.container');
-    container?.scrollTo({
-      left: container.scrollWidth,
-      behavior: 'smooth'
-    });
-
-    this.router.navigate(['', brand]);
-
+  ngOnInit() {
+    this.brands = this.makers;
   }
 
   onSearch(searchTerm: any): void {
-    const filteredBrands = this.carState.getBrands().filter(brand => brand.make.toLowerCase().includes(searchTerm.toLowerCase()));
+    const brands = this.makers().filter(brand => brand.make.toLowerCase().includes(searchTerm.toLowerCase()));
 
-    if (filteredBrands.length === 0 || filteredBrands.length === this.carState.getBrands().length) {
-      this.loadBrnads();
+    if (brands.length === 0 || brands.length === this.makers().length) {
+      this.brands = this.makers;
     } else {
-      this.brands.set(filteredBrands);
-      this.brandsSub?.unsubscribe();
+      this.brands = signal<Brand[]>(brands);
     }
-
   }
 
-  ngOnDestroy(): void {
-    this.brandsSub?.unsubscribe();
+  select(input: string): void {
+    this.setBrand.emit(input)
+    this.selected = input;
   }
 
 }

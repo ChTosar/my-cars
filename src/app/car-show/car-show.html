@@ -10,18 +10,18 @@
     />
   </svg>
 </button>
-<h1>{{ brand }} {{ car.model }} {{ car.year }}</h1>
-<div class="car" [class.animate]="loaded >= imgs().length">
-  @for (img of imgs(); track $index) {
+<h1>{{ car.brand }} {{ car.model.model }} {{ car.model.year }}</h1>
+<div class="car" [class.animate]="loaded >= car.imgs().length">
+  @for (img of car.imgs(); track $index) {
     <img
       [src]="img"
-      alt="{{ car.model }}"
+      alt="{{ car.model.model }}"
       [class]="'view_' + $index"
       (load)="imgLoaded()"
       #views
     />
   }
-  @if (loaded < imgs().length) {
+  @if (loaded < car.imgs().length) {
     <div class="loading">
       <div class="loader"></div>
     </div>

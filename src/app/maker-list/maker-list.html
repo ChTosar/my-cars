@@ -5,8 +5,8 @@
 <ul>
   @for (brand of brands(); track brand.make) {
     <li
-      (click)="setBrand(brand.make)"
-      [class.selected]="(carState.getSelectedBrand() | async) === brand.make"
+      (click)="select(brand.make)"
+      [class.selected]="selected === brand.make"
     >
       {{ brand.make }}
       <div class="brandLogo">

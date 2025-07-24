@@ -1,31 +1,3 @@
-:host {
-  height: 100vh;
-  width: 80vw;
-  display: flex;
-  flex-wrap: wrap;
-  @media (orientation: portrait) {
-    width: 100vw;
-  }
-}
-
-.topBar {
-  display: none;
-  width: 100%;
-  box-shadow: 1px 0px 10px 0px var(--background-color);
-  z-index: 1;
-  @media (orientation: portrait) {
-    display: block;
-    left: 0;
-    background-color: var(--background-color);
-  }
-  button.back {
-    background: none;
-    border: none;
-    padding: 1rem;
-    cursor: pointer;
-  }
-}
-
 ul {
   overflow: auto;
   height: 100%;

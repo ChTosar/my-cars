@@ -1,50 +1,30 @@
-import { Component, ElementRef, QueryList, signal, ViewChildren } from '@angular/core';
+import { Component, effect, ElementRef, EventEmitter, Input, Output, QueryList, signal, ViewChildren } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
-import { Model, ModelStatus } from '../models/cars.model';
-import { CarStateService } from '../state/car.state.service';
-import { CarShow } from '../car-show/car-show';
-import { Subscription } from 'rxjs';
-import { Router } from '@angular/router';
+import { ModelStatus, ModelsByYear } from '../models/cars.model';
 
-interface ModelsByYear {
-  year: string,
-  models: ModelStatus[];
-}
+
 @Component({
   selector: 'app-models-list',
   standalone: true,
-  imports: [AsyncPipe, CarShow],
+  imports: [AsyncPipe],
   templateUrl: './models-list.html',
   styleUrl: './models-list.scss'
 })
 export class ModelsList {
 
+  @Input() listModels = signal<ModelsByYear[]>([]);
   models = signal<ModelsByYear[]>([]);
-  carShow = signal(false);
-  modelSelect = signal<ModelStatus>({} as ModelStatus);
-  private modelsSub?: Subscription;
+
+  @Output() requestMore = new EventEmitter();
+  @Output() modelSelected = new EventEmitter<ModelStatus>();
 
   @ViewChildren('modelsRef') itemRefs!: QueryList<ElementRef>;
   lasElementObsesrver: IntersectionObserver | null = null;
 
-  constructor(private carState: CarStateService, private router: Router, private elRef: ElementRef) {
-    this.modelsSub = this.carState.getModels().subscribe((models: Model[]) => {
+  constructor(private elRef: ElementRef) {}
 
-      //order models by year
-      const modelsByYear: ModelsByYear[] = [];
-      models.forEach(model => {
-        const year = model.year;
-        let yearGroup = modelsByYear.find(y => y.year === year);
-        if (!yearGroup) {
-          yearGroup = { year, models: [] };
-          modelsByYear.push(yearGroup);
-        }
-        yearGroup.models.push(model as ModelStatus);
-      });
-      this.elRef.nativeElement?.scrollTo({ top: 0 });
-      this.models.set(modelsByYear);
-
-    });
+  ngOnInit() {
+    this.models = this.listModels // necesario para poder buscar después ??
   }
 
   //evento tras repintado de la lista
@@ -53,14 +33,13 @@ export class ModelsList {
     this.loadMore();
   };
 
-
   loadMore() {
     const lastItem = this.itemRefs.last;
 
     if (lastItem) {
       this.lasElementObsesrver = new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting) {
-          this.carState.loadMoreModels();
+          this.requestMore.emit();
         }
       });
       this.lasElementObsesrver.observe(lastItem.nativeElement);
@@ -72,22 +51,7 @@ export class ModelsList {
   }
 
   show(model: ModelStatus): void {
-    this.modelSelect.set(model);
-    this.carShow.set(true);
-  }
-
-  back() {
-    document.querySelector('.container')?.scrollTo({
-      left: 0,
-      behavior: 'smooth'
-    });
-
-    this.router.navigate(['']);
-  }
-
-  close() {
-    this.carShow.set(false);
-    this.modelsSub?.unsubscribe();
+    this.modelSelected.emit(model);
   }
 
 }

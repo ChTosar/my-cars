@@ -27,3 +27,8 @@ export type ModelStatus = Model & {
     loaded: boolean
   }
 }
+
+export interface ModelsByYear {
+  year: string,
+  models: ModelStatus[];
+}
