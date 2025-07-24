@@ -32,13 +32,15 @@ export class MainPage {
     this.route.paramMap.subscribe(params => {
       setTimeout(() => { //TODO buscar algún evento
 
-        // this.carState.setSelectedBrand(params.get('id'));
+        if (params.get('id')) {
+          this.carState.setSelectedBrand(params.get('id'));
+          const container = document.querySelector('.container');
+          container?.scrollTo({
+            left: container.scrollWidth,
+            behavior: 'smooth'
+          });
+        }
 
-        const container = document.querySelector('.container');
-        container?.scrollTo({
-          left: container.scrollWidth,
-          behavior: 'smooth'
-        });
       }, 100)
     });
   }
@@ -118,7 +120,7 @@ export class MainPage {
       behavior: 'smooth'
     });
 
-    this.router.navigate(['']);
+    //this.router.navigate(['']);
   }
 
 }

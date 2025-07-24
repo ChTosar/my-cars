@@ -33,13 +33,24 @@ export class Api {
 
     const url = new URL(this.apiUrl);
     url.searchParams.append('refine', `make:${brand}`);
-    url.searchParams.append('select', 'model, basemodel, year');
+    url.searchParams.append('select', 'model, basemodel, year, id');
     url.searchParams.append('limit', this.carsLimitReq.toString());
     url.searchParams.append('order_by', 'year DESC');
 
     if (offset) {
       url.searchParams.append('offset', offset.toString());
     }
+
+    return this.http.get(url.toString());
+  }
+
+  searchModel(brand: string, text: string): Observable<any> {
+    const url = new URL(this.apiUrl);
+    url.searchParams.append('select', 'model, basemodel, year, id');
+    url.searchParams.append('where',`suggest(model, "${text}")`);
+    url.searchParams.append('refine', `make:${brand}`);
+    url.searchParams.append('limit', this.carsLimitReq.toString());
+    url.searchParams.append('order_by', 'year DESC');
 
     return this.http.get(url.toString());
   }
@@ -74,7 +85,7 @@ export class Api {
 
   async randomColor(combinations: Promise<[]>): Promise<string> {
 
-    const paintCombinations:any = await combinations;
+    const paintCombinations: any = await combinations;
 
     let results: string[] = [];
 

@@ -12,6 +12,7 @@ export interface Brand {
 export interface Model {
   model: string;
   basemodel: string;
+  id: number;
   year: string;
   img: {
     src: Promise<string>;

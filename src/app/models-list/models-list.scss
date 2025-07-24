@@ -1,6 +1,10 @@
-ul {
-  overflow: auto;
+:host {
   height: 100%;
+  overflow: auto;
+  max-height: 100%;
+}
+
+ul {
   margin: 0;
   display: flex;
   flex-wrap: wrap;

@@ -1,4 +1,4 @@
-import { Component, effect, ElementRef, EventEmitter, Input, Output, QueryList, signal, ViewChildren } from '@angular/core';
+import { Component, ElementRef, EventEmitter, HostListener, Input, Output, QueryList, signal, ViewChildren } from '@angular/core';
 import { AsyncPipe } from '@angular/common';
 import { ModelStatus, ModelsByYear } from '../models/cars.model';
 
@@ -20,29 +20,35 @@ export class ModelsList {
 
   @ViewChildren('modelsRef') itemRefs!: QueryList<ElementRef>;
   lasElementObsesrver: IntersectionObserver | null = null;
+  lastItem?: ElementRef;
 
-  constructor(private elRef: ElementRef) {}
+  constructor(private elRef: ElementRef) { }
 
   ngOnInit() {
     this.models = this.listModels // necesario para poder buscar después ??
   }
 
-  //evento tras repintado de la lista
   ngAfterViewChecked(): void {
-    this.lasElementObsesrver?.disconnect();
+    this.loadMore();
+  }
+
+  @HostListener('scroll', ['$event'])
+  onScroll(e: Event): void {
     this.loadMore();
   };
 
   loadMore() {
-    const lastItem = this.itemRefs.last;
+    if (this.itemRefs.last && this.lastItem !== this.itemRefs.last) {
+      this.lastItem = this.itemRefs.last;
 
-    if (lastItem) {
+      this.lasElementObsesrver?.disconnect();
       this.lasElementObsesrver = new IntersectionObserver(([entry]) => {
         if (entry.isIntersecting) {
           this.requestMore.emit();
         }
       });
-      this.lasElementObsesrver.observe(lastItem.nativeElement);
+
+      this.lasElementObsesrver.observe(this.lastItem.nativeElement);
     }
   }
 

@@ -9,7 +9,7 @@
   }
 }
 
-.left {
+.start {
   height: 100vh;
   width: 20vw;
   display: flex;
@@ -19,15 +19,22 @@
   position: relative;
 }
 
-.right {
+.end {
   height: 100vh;
   width: 80vw;
   display: flex;
   flex-wrap: wrap;
+  flex-direction: column;
+
+  app-models-list {
+    min-height: 0;
+    flex: 1;
+  }
 }
 
 @media (orientation: portrait) {
-  .left, .right {
+  .start,
+  .end {
     width: 100vw;
   }
 }
