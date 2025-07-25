@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
 import { Brand, Model } from '../models/cars.model';
 import { Api } from '../services/api.service';
 
@@ -60,11 +60,18 @@ export class CarStateService {
     }));
   }
 
+  private existingBrand(): Brand {
+    const brand = this.selectedBrandId$.getValue() as string;
+    const brands = this.brands$.getValue();
+    const existingBrand = brands.find(b => b.make === brand) as Brand;
+
+    return existingBrand;
+  }
 
   loadModels(brand: string, offset: number = 0): void {
     const brands = this.brands$.getValue();
-    const existingBrand = brands.find(b => b.make === brand) as Brand;
-    const currentModels = existingBrand.models || [];
+    const existingBrand = this.existingBrand();
+    const currentModels = existingBrand.models || []
 
     if (offset === 0 && currentModels.length > 0) {
       this.models$.next(currentModels);
@@ -73,28 +80,78 @@ export class CarStateService {
 
     this.api.getModels(brand, offset).subscribe(response => {
       const newModels = response.results.map((model: any, index: number) => {
-        const id = index + offset;
 
-        const colors: Promise<any> = this.api.getCarColors(brand, model.model, model.year);
-        const color: Promise<any> = this.api.randomColor(colors);
+        const id = model.id;
 
-        return {
-          id,
-          model: model.model,
-          basemodel: model.basemodel,
-          year: model.year,
-          colors,
-          color,
-          img: {
-            src: this.api.getImg(brand, model.model, model.year, '200', color),
-          }
-        };
+        const available = currentModels.find(model => model.id === id);
+
+        if (!available) {
+
+          const colors: Promise<any> = this.api.getCarColors(brand, model.model, model.year);
+          const color: Promise<any> = this.api.randomColor(colors);
+
+          return {
+            id,
+            idoffset: index + offset,
+            model: model.model,
+            basemodel: model.basemodel,
+            year: model.year,
+            colors,
+            color,
+            img: {
+              src: this.api.getImg(brand, model.model, model.year, '200', color),
+            }
+          };
+        } else {
+          available.idoffset = index + offset;
+          return available;
+        }
       });
 
       existingBrand.models = [...currentModels, ...newModels];
       this.models$.next(existingBrand.models);
-      this.brands$.next(brands);
     });
+  }
+
+  async searchModel(text: string) {
+
+    const brand = this.selectedBrandId$.getValue() as string;
+    const brands = this.brands$.getValue();
+    const existingBrand = this.existingBrand();
+    const currentModels = existingBrand.models || [];
+
+    const response = await firstValueFrom(this.api.searchModel(brand, text))
+    const newModels = response.results.map((model: any, index: number) => {
+
+      const id = model.id;
+
+      const available = currentModels.find(model => model.id === id);
+
+      if (available) {
+        return available
+      }
+
+      const colors: Promise<any> = this.api.getCarColors(brand, model.model, model.year);
+      const color: Promise<any> = this.api.randomColor(colors);
+
+      return {
+        id,
+        model: model.model,
+        basemodel: model.basemodel,
+        year: model.year,
+        colors,
+        color,
+        img: {
+          src: this.api.getImg(brand, model.model, model.year, '200', color),
+        }
+      };
+
+    });
+
+    existingBrand.models = [...currentModels, ...newModels.filter((newModel: any) => currentModels.find(model => model.id === newModel.id) === undefined)];
+    this.models$.next(existingBrand.models);
+
+    return newModels;
   }
 
   loadMoreModels(): void {

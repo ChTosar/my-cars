@@ -1,9 +1,15 @@
+@if (models().length > 0) {
+  <app-search
+    placeholder="Search a model"
+    (searchEvent)="onSearch($event)"
+  ></app-search>
+}
 <ul>
   @for (group of models(); track group.year) {
     <div class="year">{{ group.year }}</div>
     <div class="yearModels">
       @for (model of group.models; track model.id) {
-        <li (click)="show(model)" #modelsRef>
+        <li (click)="show(model)" [attr.idoffset]="model.idoffset" #modelsRef>
           <img
             [src]="model.img.src | async"
             (load)="imgLoaded(model)"

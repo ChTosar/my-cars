@@ -6,7 +6,7 @@ export interface Cars {
 export interface Brand {
   make: string;
   totalModels: number | null;
-  models: Model[];
+  models: ModelStatus[];
 }
 
 export interface Model {
@@ -21,6 +21,7 @@ export interface Model {
 
 export type ModelStatus = Model & {
   id: number,
+  idoffset: number,
   colors: Promise<[]>,
   color: Promise<string>,
   img: {

@@ -64,11 +64,24 @@ export class MainPage {
       yearGroup.models.push(model as ModelStatus);
     });
 
+    modelsByYear.sort((a, b) => Number(b.year) - Number(a.year));
+
     return modelsByYear;
   }
 
   loadMoreModels() {
     this.carState.loadMoreModels();
+  }
+
+  async searchModel(text: string) {
+    if (text !== '') {
+      const newModels = await this.carState.searchModel(text);
+      if (newModels.length > 0) {
+        this.models.set(this.groupByYear(newModels));
+      }
+    } else {
+      this.loadModels();
+    }
   }
 
   loadBrnads(): void {
